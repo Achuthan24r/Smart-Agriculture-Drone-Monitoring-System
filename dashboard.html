@@ -1,1 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farm Drone Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+
+<h1>🌾 Drone Crop Monitoring Map</h1>
+<div id="map" style="height:600px;"></div>
+
+<script>
+var map = L.map('map').setView([11.0168, 76.9558], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+fetch("http://localhost:5001/detections")
+.then(res => res.json())
+.then(data => {
+    data.forEach(d => {
+        L.marker([d.lat, d.lng])
+         .addTo(map)
+         .bindPopup("Disease: " + d.disease);
+    });
+});
+</script>
+
+</body>
+</html>
 
