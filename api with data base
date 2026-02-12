@@ -1,0 +1,32 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+mongoose.connect("mongodb://localhost:27017/farmdrone");
+
+const DetectionSchema = new mongoose.Schema({
+    disease: String,
+    lat: String,
+    lng: String,
+    date: { type: Date, default: Date.now }
+});
+
+const Detection = mongoose.model("Detection", DetectionSchema);
+
+app.post("/detection", async (req, res) => {
+    const detection = new Detection(req.body);
+    await detection.save();
+    res.json({ status: "Saved" });
+});
+
+app.get("/detections", async (req, res) => {
+    const data = await Detection.find();
+    res.json(data);
+});
+
+app.listen(5001, () => console.log("Node Server running on 5001"));
+
